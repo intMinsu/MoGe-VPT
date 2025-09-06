@@ -150,7 +150,7 @@ class MoGeModel(nn.Module):
         # Concat UVs for aspect ratio input
         for level in range(5):
             uv = normalized_view_plane_uv(width=base_w * 2 ** level, height=base_h * 2 ** level, aspect_ratio=aspect_ratio, dtype=dtype, device=device)
-            uv = uv.permute(2, 0, 1).unsqueeze(0).expand(batch_size, -1, -1, -1)
+            uv = uv.permute(2, 0, 1).unsqueeze(0).expand(batch_size, -1, -1, -1) # [B, 2, H_l, W_l]
             if features[level] is None:
                 features[level] = uv
             else:
