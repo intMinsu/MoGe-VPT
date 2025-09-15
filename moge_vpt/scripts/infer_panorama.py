@@ -55,10 +55,10 @@ def main(
     from scipy.sparse.linalg import lsmr
 
     import utils3d
-    from moge.model.v1 import MoGeModel
-    from moge.utils.io import save_glb, save_ply
-    from moge.utils.vis import colorize_depth
-    from moge.utils.panorama import spherical_uv_to_directions, get_panorama_cameras, split_panorama_image, merge_panorama_depth
+    from moge_vpt.model.v1 import MoGeModel
+    from moge_vpt.utils.io import save_glb, save_ply
+    from moge_vpt.utils.vis import colorize_depth
+    from moge_vpt.utils.panorama import spherical_uv_to_directions, get_panorama_cameras, split_panorama_image, merge_panorama_depth
 
     
     device = torch.device(device_name)

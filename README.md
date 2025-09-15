@@ -163,13 +163,13 @@ For more usage details, see the `MoGeModel.infer()` docstring.
 
 ```bash
 # Using the command line tool
-moge app        # will run MoGe-2 demo by default.
+moge_vpt app        # will run MoGe-2 demo by default.
 
 # In this repo
-python moge/scripts/app.py   # --share for Gradio public sharing
+python moge_vpt/scripts/app.py   # --share for Gradio public sharing
 ```
 
-See also [`moge/scripts/app.py`](moge/scripts/app.py) 
+See also [`moge/scripts/app.py`](moge_vpt/scripts/app.py) 
 
 
 ### Inference | `moge infer`
@@ -178,10 +178,10 @@ Run the script `moge/scripts/infer.py` via the following command:
 
 ```bash
 # Save the output [maps], [glb] and [ply] files
-moge infer -i IMAGES_FOLDER_OR_IMAGE_PATH --o OUTPUT_FOLDER --maps --glb --ply
+moge_vpt infer -i IMAGES_FOLDER_OR_IMAGE_PATH --o OUTPUT_FOLDER --maps --glb --ply
 
 # Show the result in a window (requires pyglet < 2.0, e.g. pip install pyglet==1.5.29)
-moge infer -i IMAGES_FOLDER_OR_IMAGE_PATH --o OUTPUT_FOLDER --show
+moge_vpt infer -i IMAGES_FOLDER_OR_IMAGE_PATH --o OUTPUT_FOLDER --show
 ```
 
 For detailed options, run `moge infer --help`:
@@ -233,7 +233,7 @@ Options:
   --help                      Show this message and exit.
 ```
 
-See also [`moge/scripts/infer.py`](moge/scripts/infer.py)
+See also [`moge/scripts/infer.py`](moge_vpt/scripts/infer.py)
 
 ### 360° panorama images | `moge infer_panorama` 
 
@@ -251,7 +251,7 @@ Note that the panorama image must have spherical parameterization (e.g., environ
 The photo is from [this URL](https://commons.wikimedia.org/wiki/Category:360%C2%B0_panoramas_with_equirectangular_projection#/media/File:Braunschweig_Sankt-%C3%84gidien_Panorama_02.jpg)
 </div>
 
-See also [`moge/scripts/infer_panorama.py`](moge/scripts/infer_panorama.py)
+See also [`moge/scripts/infer_panorama.py`](moge_vpt/scripts/infer_panorama.py)
 
 ## 🏋️‍♂️ Training & Finetuning
 

@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "moge"
+name = "moge-vpt"
 version = "2.0.0"
 description = "MoGe: Unlocking Accurate Monocular Geometry Estimation for Open-Domain Images with Optimal Training Supervision"
 readme = "README.md"
@@ -29,7 +29,7 @@ Homepage = "https://github.com/microsoft/MoGe"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["moge*"]
+include = ["moge_vpt*"]
 
 [project.scripts]
-moge = "moge.scripts.cli:main"
+moge = "moge_vpt.scripts.cli:main"

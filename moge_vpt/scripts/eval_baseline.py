@@ -29,12 +29,12 @@ def main(ctx: click.Context, baseline_code_path: str, config_path: str, oracle_m
     import torch.nn.functional as F
     import utils3d
 
-    from moge.test.baseline import MGEBaselineInterface
-    from moge.test.dataloader import EvalDataLoaderPipeline
-    from moge.test.metrics import compute_metrics
-    from moge.utils.geometry_torch import intrinsics_to_fov
-    from moge.utils.vis import colorize_depth, colorize_normal
-    from moge.utils.tools import key_average, flatten_nested_dict, timeit, import_file_as_module
+    from moge_vpt.test.baseline import MGEBaselineInterface
+    from moge_vpt.test.dataloader import EvalDataLoaderPipeline
+    from moge_vpt.test.metrics import compute_metrics
+    from moge_vpt.utils.geometry_torch import intrinsics_to_fov
+    from moge_vpt.utils.vis import colorize_depth, colorize_normal
+    from moge_vpt.utils.tools import key_average, flatten_nested_dict, timeit, import_file_as_module
     
     # Load the baseline model
     module = import_file_as_module(baseline_code_path, Path(baseline_code_path).stem)

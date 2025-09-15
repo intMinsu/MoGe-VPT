@@ -7,14 +7,14 @@ import click
 import torch
 import utils3d
 
-from moge.test.baseline import MGEBaselineInterface
+from moge_vpt.test.baseline import MGEBaselineInterface
 
 
 class Baseline(MGEBaselineInterface):
 
     def __init__(self, num_tokens: int, resolution_level: int, pretrained_model_name_or_path: str, use_fp16: bool, device: str = 'cuda:0', version: str = 'v1'):
         super().__init__()
-        from moge.model import import_model_class_by_version
+        from moge_vpt.model import import_model_class_by_version
         MoGeModel = import_model_class_by_version(version)
         self.version = version
 

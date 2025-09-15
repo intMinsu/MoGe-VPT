@@ -59,10 +59,10 @@ def main(
     import trimesh.visual
     import click
 
-    from moge.model import import_model_class_by_version
-    from moge.utils.io import save_glb, save_ply
-    from moge.utils.vis import colorize_depth, colorize_normal
-    from moge.utils.geometry_numpy import depth_occlusion_edge_numpy
+    from moge_vpt.model import import_model_class_by_version
+    from moge_vpt.utils.io import save_glb, save_ply
+    from moge_vpt.utils.vis import colorize_depth, colorize_normal
+    from moge_vpt.utils.geometry_numpy import depth_occlusion_edge_numpy
     import utils3d
 
     device = torch.device(device_name)

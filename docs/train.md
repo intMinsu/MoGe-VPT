@@ -33,11 +33,11 @@ somedataset
 
 * `.index.txt` is placed at top directory to store a list of instance paths in this dataset. The dataloader will look for instances in this list. You may also use a custom split, e.g. `.train.txt`, `.val.txt` and specify it in the configuration file.
 
-* For depth images, it is recommended to use `read_depth()` and `write_depth()` in [`moge/utils/io.py`](../moge/utils/io.py) to read and write depth images. The depth is stored in logarithmic scale in 16-bit PNG format, offering a balanced precision, dynamic range and compression ratio compared to 16-bit and 32-bit EXR and linear depth formats. It also encodes `NaN` and `Inf` values for invalid depth values.
+* For depth images, it is recommended to use `read_depth()` and `write_depth()` in [`moge/utils/io.py`](../moge_vpt/utils/io.py) to read and write depth images. The depth is stored in logarithmic scale in 16-bit PNG format, offering a balanced precision, dynamic range and compression ratio compared to 16-bit and 32-bit EXR and linear depth formats. It also encodes `NaN` and `Inf` values for invalid depth values.
 
 * The `meta.json` should be a dictionary containing the key `intrinsics`, which are **normalized** camera parameters. You may put more metadata.
 
-* We also support reading and storing segementation masks for evaluation data (see paper evaluation of local points), which are saved in PNG format with semantic labels stored in png metadata as JSON strings. See `read_segmentation()` and `write_segmentation()` in [`moge/utils/io.py`](../moge/utils/io.py) for details.
+* We also support reading and storing segementation masks for evaluation data (see paper evaluation of local points), which are saved in PNG format with semantic labels stored in png metadata as JSON strings. See `read_segmentation()` and `write_segmentation()` in [`moge/utils/io.py`](../moge_vpt/utils/io.py) for details.
 
 
 ### Visual inspection
@@ -45,12 +45,12 @@ somedataset
 We provide a script to visualize the data and check the data quality. It will export the instance as a PLY file for visualization of point cloud.
 
 ```bash
-python moge/scripts/vis_data.py PATH_TO_INSTANCE --ply [-o SOMEWHERE_ELSE_TO_SAVE_VIS]
+python moge_vpt/scripts/vis_data.py PATH_TO_INSTANCE --ply [-o SOMEWHERE_ELSE_TO_SAVE_VIS]
 ```
 
 ### DataLoader
 
-Our training dataloaders is customized to handle loading data, performing perspective crop, and augmentation in a multithreading pipeline. Please refer to [`moge/train/dataloader.py`](../moge/train/dataloader.py) if you have any concern.
+Our training dataloaders is customized to handle loading data, performing perspective crop, and augmentation in a multithreading pipeline. Please refer to [`moge/train/dataloader.py`](../moge_vpt/train/dataloader.py) if you have any concern.
 
 
 ## Configuration
@@ -140,12 +140,12 @@ Here is a commented configuration for reference:
 
 ## Run Training 
 
-Launch the training script [`moge/scripts/train.py`](../moge/scripts/train.py). Note that we use [`accelerate`](https://github.com/huggingface/accelerate) for distributed training. 
+Launch the training script [`moge/scripts/train.py`](../moge_vpt/scripts/train.py). Note that we use [`accelerate`](https://github.com/huggingface/accelerate) for distributed training. 
 
 ```bash
 accelerate launch \
     --num_processes 8 \
-    moge/scripts/train.py \
+    moge_vpt/scripts/train.py \
     --config configs/train/v1.json \
     --workspace workspace/debug \
     --gradient_accumulation_steps 2 \
@@ -169,12 +169,12 @@ The settings in default configuration are not optimal for specific datasets and 
 ```bash
 accelerate launch \
     --num_processes 8 \
-    moge/scripts/train.py \
+    moge_vpt/scripts/train.py \
     --config configs/train/v1.json \
     --workspace workspace/debug \
     --gradient_accumulation_steps 2 \
     --batch_size_forward 2 \
-    --checkpoint pretrained/moge-vitl.pt \
+    --checkpoint pretrained/moge_vpt-vitl.pt \
     --enable_gradient_checkpointing True \
     --vis_every 1000 \
     --enable_mlflow True

@@ -38,8 +38,8 @@ def main(
     from tqdm import tqdm
     import trimesh
 
-    from moge.utils.io import read_image, read_depth, read_meta
-    from moge.utils.vis import colorize_depth, colorize_normal
+    from moge_vpt.utils.io import read_image, read_depth, read_meta
+    from moge_vpt.utils.vis import colorize_depth, colorize_normal
 
     filepaths = sorted(p.parent for p in Path(folder_or_path).rglob('meta.json')) 
 

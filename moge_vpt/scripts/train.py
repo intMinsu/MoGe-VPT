@@ -28,8 +28,8 @@ from tqdm import tqdm, trange
 import mlflow
 torch.backends.cudnn.benchmark = False      # Varying input size, make sure cudnn benchmark is disabled
 
-from moge.train.dataloader import TrainDataLoaderPipeline
-from moge.train.losses import (
+from moge_vpt.train.dataloader import TrainDataLoaderPipeline
+from moge_vpt.train.losses import (
     affine_invariant_global_loss,
     affine_invariant_local_loss, 
     edge_loss,
@@ -38,11 +38,11 @@ from moge.train.losses import (
     mask_bce_loss,
     monitoring, 
 )
-from moge.train.utils import build_optimizer, build_lr_scheduler
-from moge.utils.geometry_torch import intrinsics_to_fov
-from moge.utils.vis import colorize_depth, colorize_normal
-from moge.utils.tools import key_average, recursive_replace, CallbackOnException, flatten_nested_dict
-from moge.test.metrics import compute_metrics
+from moge_vpt.train.utils import build_optimizer, build_lr_scheduler
+from moge_vpt.utils.geometry_torch import intrinsics_to_fov
+from moge_vpt.utils.vis import colorize_depth, colorize_normal
+from moge_vpt.utils.tools import key_average, recursive_replace, CallbackOnException, flatten_nested_dict
+from moge_vpt.test.metrics import compute_metrics
 
 
 @click.command()
@@ -113,7 +113,7 @@ def main(
     # Initialize model
     print('Initialize model')
     with accelerator.local_main_process_first():
-        from moge.model import import_model_class_by_version
+        from moge_vpt.model import import_model_class_by_version
         MoGeModel = import_model_class_by_version(config['model_version'])      
         model = MoGeModel(**config['model'])
     count_total_parameters = sum(p.numel() for p in model.parameters())
@@ -205,7 +205,7 @@ def main(
     model, optimizer = accelerator.prepare(model, optimizer)
     if torch.version.hip and isinstance(model, torch.nn.parallel.DistributedDataParallel):
         # Hacking potential gradient synchronization issue in ROCm backend
-        from moge.model.utils import sync_ddp_hook
+        from moge_vpt.model.utils import sync_ddp_hook
         model.register_comm_hook(None, sync_ddp_hook)
 
     # Initialize training data pipeline

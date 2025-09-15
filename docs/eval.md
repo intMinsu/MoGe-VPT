@@ -29,15 +29,15 @@ Some examples of baselines are provided in [`baselines/`](../baselines/). Pass t
 
 ## Run Evaluation
 
-Run the script [`moge/scripts/eval_baseline.py`](../moge/scripts/eval_baseline.py). 
+Run the script [`moge/scripts/eval_baseline.py`](../moge_vpt/scripts/eval_baseline.py). 
 For example, 
 
 ```bash
 # Evaluate MoGe on the 10 benchmarks
-python moge/scripts/eval_baseline.py --baseline baselines/moge.py --config configs/eval/all_benchmarks.json --output eval_output/moge.json --pretrained Ruicheng/moge-vitl --resolution_level 9
+python moge_vpt/scripts/eval_baseline.py --baseline baselines/moge_vpt.py --config configs/eval/all_benchmarks.json --output eval_output/moge_vpt.json --pretrained Ruicheng/moge_vpt-vitl --resolution_level 9
 
 # Evaluate Depth Anything V2 on the 10 benchmarks. (NOTE: affine disparity)
-python moge/scripts/eval_baseline.py --baseline baselines/da_v2.py --config configs/eval/all_benchmarks.json --output eval_output/da_v2.json
+python moge_vpt/scripts/eval_baseline.py --baseline baselines/da_v2.py --config configs/eval/all_benchmarks.json --output eval_output/da_v2.json
 ```
 
 The `--baselies` `--input` `--output` arguments are for the inference script. The rest arguments, e.g. `--pretrained` `--resolution_level`, are custormized for loading the baseline model.
@@ -65,10 +65,10 @@ Options:
 
 ## Wrap a Customized Baseline
 
-Wrap any baseline method with [`moge.test.baseline.MGEBaselineInterface`](../moge/test/baseline.py).
+Wrap any baseline method with [`moge.test.baseline.MGEBaselineInterface`](../moge_vpt/test/baseline.py).
 See [`baselines/`](../baselines/) for more examples.
 
-It is a good idea to check the correctness of the baseline implementation by running inference on a small set of images via [`moge/scripts/infer_baselines.py`](../moge/scripts/infer_baselines.py):
+It is a good idea to check the correctness of the baseline implementation by running inference on a small set of images via [`moge/scripts/infer_baselines.py`](../moge_vpt/scripts/infer_baselines.py):
 
 ```base
 python moge/scripts/infer_baselines.py --baseline baselines/moge.py --input example_images/ --output infer_outupt/moge --pretrained Ruicheng/moge-vitl --maps --ply

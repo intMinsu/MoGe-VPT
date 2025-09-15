@@ -13,7 +13,7 @@ def cli():
     pass
 
 def main():
-    from moge.scripts import app, infer, infer_baseline, infer_panorama, eval_baseline, vis_data
+    from moge_vpt.scripts import app, infer, infer_baseline, infer_panorama, eval_baseline, vis_data
     cli.add_command(app.main, name='app')
     cli.add_command(infer.main, name='infer')
     cli.add_command(infer_baseline.main, name='infer_baseline')

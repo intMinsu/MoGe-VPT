@@ -32,11 +32,11 @@ def main(ctx: click.Context, baseline_code_path: str, input_path: str, output_pa
     import torch
     import utils3d
 
-    from moge.utils.io import save_ply, save_glb
-    from moge.utils.geometry_numpy import intrinsics_to_fov_numpy
-    from moge.utils.vis import colorize_depth, colorize_depth_affine, colorize_disparity
-    from moge.utils.tools import key_average, flatten_nested_dict, timeit, import_file_as_module
-    from moge.test.baseline import MGEBaselineInterface
+    from moge_vpt.utils.io import save_ply, save_glb
+    from moge_vpt.utils.geometry_numpy import intrinsics_to_fov_numpy
+    from moge_vpt.utils.vis import colorize_depth, colorize_depth_affine, colorize_disparity
+    from moge_vpt.utils.tools import key_average, flatten_nested_dict, timeit, import_file_as_module
+    from moge_vpt.test.baseline import MGEBaselineInterface
 
     # Load the baseline model
     module = import_file_as_module(baseline_code_path, Path(baseline_code_path).stem)

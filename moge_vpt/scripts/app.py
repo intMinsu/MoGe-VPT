@@ -38,11 +38,11 @@ def main(share: bool, pretrained_model_name_or_path: str, model_version: str, us
         HUGGINFACE_SPACES_INSTALLED = False
 
     import utils3d
-    from moge.utils.io import write_normal
-    from moge.utils.vis import colorize_depth, colorize_normal
-    from moge.model import import_model_class_by_version
-    from moge.utils.geometry_numpy import depth_occlusion_edge_numpy
-    from moge.utils.tools import timeit
+    from moge_vpt.utils.io import write_normal
+    from moge_vpt.utils.vis import colorize_depth, colorize_normal
+    from moge_vpt.model import import_model_class_by_version
+    from moge_vpt.utils.geometry_numpy import depth_occlusion_edge_numpy
+    from moge_vpt.utils.tools import timeit
 
     print("Load model...")
     if pretrained_model_name_or_path is None:
