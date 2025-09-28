@@ -11,6 +11,17 @@ from concurrent.futures import ThreadPoolExecutor
 PathLike = Union[str, "os.PathLike[str]"]
 
 def _to_gray_bhwc_uint8(image_b3hw: torch.Tensor) -> torch.Tensor:
+    """
+        Convert batch of RGB images (B,3,H,W) in [0,1] float/half
+        to grayscale uint8 format (B,H,W,3).
+
+        Args:
+            image_b3hw: Tensor of shape (B,3,H,W), values in [0,1].
+
+        Returns:
+            Tensor of shape (B,H,W,3), dtype uint8, grayscale replicated
+            across 3 channels.
+    """
     # image_b3hw: (B,3,H,W) in [0,1] float/half
     r, g, b = image_b3hw[:, 0], image_b3hw[:, 1], image_b3hw[:, 2]
     gray = 0.299 * r + 0.587 * g + 0.114 * b                    # (B,H,W)
@@ -22,6 +33,28 @@ def _normalize_batch(
     xy_pix: Union[torch.Tensor, Sequence[torch.Tensor]],
     out_path: Union[PathLike, Sequence[PathLike]],
 ):
+    """
+    Normalize heterogeneous batch inputs to consistent shapes and types.
+
+    Args:
+        image: RGB image(s) in one of:
+            (3,H,W), (H,W,3), (B,3,H,W), or (B,H,W,3).
+        xy_pix: Pixel coordinates per image, as either:
+            (M,2) for single image, (B,M,2) for batch, or a sequence of Tensors
+            where each is (Mi,2). Values are cast to float32 on `image`'s device.
+        out_path: Output path(s). String/PathLike for single image, or a sequence
+            of length B for batches.
+
+    Returns:
+        image_b3hw: Tensor of shape (B,3,H,W).
+        xy_list: List of length B with Tensors of shape (Mi,2), dtype float32.
+        out_paths: List[str] of length B.
+        shape: Tuple (B,H,W).
+
+    Raises:
+        ValueError: If input shapes/types are incompatible (e.g., length mismatch).
+        AssertionError: If channel count is not 3.
+    """
     if image.dim() == 3:
         if image.shape[0] == 3: # (3, H, W)
             image_b3hw = image.unsqueeze(0)
@@ -67,6 +100,30 @@ def _normalize_batch(
     return image_b3hw, xy_list, out_paths, (B, H, W)
 
 def _make_disk_kernel(radius: int, device: torch.device) -> torch.Tensor:
+    """
+    Create a binary disk-shaped convolution kernel.
+
+    Args:
+        radius: Nonnegative disk radius in pixels.
+        device: Torch device for the returned tensor.
+
+    Returns:
+        Tensor of shape (1,1,k,k), dtype float32 on `device`,
+        where k = 2*max(radius,0)+1. Ones inside the disk, zeros outside.
+        (Not normalized.)
+
+    Example:
+        >>> import torch
+        >>> import torch.nn.functional as F
+        >>> B, H, W = 1, 7, 7
+        >>> impulses = torch.zeros((B, 1, H, W))
+        >>> impulses[0, 0, 3, 3] = 1.0  # point at (u=3, v=3)
+        >>> k = _make_disk_kernel(radius=2, device=impulses.device)
+        >>> mask = (F.conv2d(impulses, k, padding=2) > 0)  # (B,1,H,W) bool
+        >>> mask.shape
+        torch.Size([1, 1, 7, 7])
+    """
+
     r = int(max(radius, 0))
     k = 2 * r + 1
     yy, xx = torch.meshgrid(
@@ -88,12 +145,31 @@ def visualize_xy_on_gray_fast(
     color: tuple[int, int, int] = (0, 255, 0),
 ) -> None:
     """
-    Vectorized batched overlay via binary convolution (GPU/CPU). Much faster than per-point PIL.
-    - image: (3,H,W)/(H,W,3) or (B,3,H,W)/(B,H,W,3) in [0,1]
-    - xy_pix: (M,2), (B,M,2), or list of length B with (Mi,2) in pixel coords (u,v)
-    - out_path: path or list of paths (len=B)
-    - radius: disc radius (px)
-    - thickness: ring thickness; 0 => filled disc
+    Draw 2D points on grayscale copies of images using a fast batched
+    convolutional disk/ring overlay, then save to disk.
+
+    Core method (fast path):
+        1) Build a sparse impulse map per image with 1s at integer-rounded (u,v).
+        2) Convolve once with a disk kernel to get the outer mask.
+        3) (Optional) Convolve with a smaller disk and subtract to form a ring.
+        4) Apply the mask in one shot on a uint8 grayscale canvas.
+        This is fully vectorized with `conv2d` on GPU/CPU, avoiding per-point loops.
+
+    Args:
+        image: RGB tensor (3,H,W)/(H,W,3)/(B,3,H,W)/(B,H,W,3) in [0,1] float/half.
+        xy_pix: Pixel coords per image: (M,2), (B,M,2), or sequence of (Mi,2) in (u,v).
+        out_path: Output path or sequence of length B.
+        radius: Disk radius in pixels.
+        thickness: 0 for filled disk; >0 = ring thickness (px).
+        color: RGB tuple (0–255) used for the overlay.
+
+    Example:
+        >>> # Single image, 3 points
+        >>> import torch
+        >>> H, W = 256, 320
+        >>> img = torch.rand(3, H, W)                      # [0,1]
+        >>> pts = torch.tensor([[50, 40], [159, 200], [10, 310]], dtype=torch.float32)
+        >>> visualize_xy_on_gray_fast(img, pts, "vis.png", radius=3, thickness=1, color=(255,0,0))
     """
     image_b3hw, xy_list, out_paths, (B, H, W) = _normalize_batch(image, xy_pix, out_path)
     device = image_b3hw.device
